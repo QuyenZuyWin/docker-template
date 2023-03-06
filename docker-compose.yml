@@ -1,0 +1,79 @@
+#version: '3'
+#
+#services:
+#
+#  db:
+#    container_name: 'db'
+#    build: ./docker/db
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_DATABASE: docker
+#      MYSQL_USER: docker
+#      MYSQL_PASSWORD: docker
+#    volumes:
+#      - ./docker/db/data:/var/lib/mysql
+#      - ./docker/db/sql:/docker-entrypoint-initdb.d
+#    ports:
+#      - 3306:3306
+#
+#  phpmyadmin:
+#    container_name: 'phpmyadmin'
+#    image: phpmyadmin/phpmyadmin
+#    environment:
+#      - PMA_ARBITRARY=1
+#      - PMA_HOSTS=DevApp-db
+#      - PMA_USER=root
+#      - PMA_PASSWORD=root
+#    ports:
+#      - 8080:80
+#
+#  redis:
+#    container_name: 'redis'
+#    image: redis:3
+#    ports:
+#      - 6379:6379
+#    command: redis-server --appendonly yes
+#    volumes:
+#      - ./docker/redis/data:/data:delegated
+#
+#  server:
+#    container_name: 'server'
+#    image: nginx
+#    restart: on-failure
+#    ports:
+#      - 3000:80
+#    volumes:
+#      - ./docker/nginx/conf/site-default.conf:/etc/nginx/conf.d/default.conf
+#      - ./server:/srv:cached
+#    depends_on:
+#      - php-fpm
+#
+#  php-fpm:
+#    container_name: 'php-fpm'
+#    build: ./docker/php-fpm
+#    restart: on-failure
+#    volumes:
+#      - ./server:/srv:cached
+#
+#  composer:
+#    container_name: 'DevApp-composer'
+#    image: composer
+#    command: 'composer install -o --ignore-platform-reqs'
+#    #command: 'composer create-project laravel/laravel server'
+#    volumes:
+#      - ./server:/srv:cached
+#    working_dir: /srv
+#
+#  node:
+#    container_name: 'DevApp-node'
+#    build: './docker/node'
+#    ports:
+#      - 80:3000
+#    tty: true
+#    volumes:
+#      - ./app/:/srv/web:rw
+#      - ./app/node_modules:/srv/web/node_modules:cached
+#    working_dir: /srv/web
+#    environment:
+#      HOST: 0.0.0.0
+#    command: bash -c 'yarn install && yarn run dev'
